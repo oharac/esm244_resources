@@ -2,12 +2,13 @@ library(tidyverse)
 library(hexSticker)
 library(palmerpenguins)
 library(ggfortify)
+library(magick)
 
 library(showtext)
 ## Loading Google fonts (http://www.google.com/fonts)
 # font_add_google(name = "Josefin Sans", family = "js")
 font_add_google(name = "Russo One", family = "r1")
-font_add_google(name = "Montserrat", family = "mm")
+# font_add_google(name = "Montserrat", family = "mm")
 ## Automatically use showtext to render text for future devices
 showtext_auto()
 
@@ -45,6 +46,13 @@ s <- sticker(subplot = p,
              s_x = 1, s_y = .65, s_width = 1, s_height = .6,
              package="244", p_size = 54, p_x = 1, p_y = 1.2, 
              p_family = 'mm', p_fontface = 'bold',
-             h_fill = '#220022', h_color = 'cyan4',
+             h_fill = '#220022', h_color = 'cyan4', h_size = 1.2,
              spotlight = TRUE, l_width = 4, l_x = 1, l_y = .6,
              filename="figures/hex_244.png")
+
+### Convert to square image for use as icon
+s_img <- image_read('figures/hex_244.png')
+native_res <- max(image_info(s_img)$width, image_info(s_img)$height)
+s_img_ext <- image_extent(s_img, sprintf('%sx%s', native_res, native_res))
+                          
+image_write(s_img_ext, 'figures/hex_244_sq.png')
