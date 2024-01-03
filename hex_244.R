@@ -7,8 +7,8 @@ library(magick)
 library(showtext)
 ## Loading Google fonts (http://www.google.com/fonts)
 # font_add_google(name = "Josefin Sans", family = "js")
-font_add_google(name = "Russo One", family = "r1")
-# font_add_google(name = "Montserrat", family = "mm")
+# font_add_google(name = "Russo One", family = "r1")
+font_add_google(name = "Montserrat", family = "mm")
 ## Automatically use showtext to render text for future devices
 showtext_auto()
 
@@ -53,6 +53,11 @@ s <- sticker(subplot = p,
 ### Convert to square image for use as icon
 s_img <- image_read('figures/hex_244.png')
 native_res <- max(image_info(s_img)$width, image_info(s_img)$height)
+
 s_img_ext <- image_extent(s_img, sprintf('%sx%s', native_res, native_res))
-                          
 image_write(s_img_ext, 'figures/hex_244_sq.png')
+
+### also make a rectangular image (landscape)
+s_img_ext <- image_extent(s_img, sprintf('%sx%s', 2*native_res, native_res))
+image_write(s_img_ext, 'figures/hex_244_rect.png')
+
