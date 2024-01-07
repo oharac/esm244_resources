@@ -1,0 +1,43 @@
+---
+title: "Week 1 examples for lecture"
+format: html
+editor: visual
+---
+
+### create normal samples for t-test example
+```{r}
+set.seed(12345)
+siteA <- rnorm(mean = 1.2, sd = .3, n = 60)
+siteB <- rnorm(mean = 0.9, sd = .3, n = 60)
+
+df <- data.frame(siteA, siteB) %>%
+  pivot_longer(names_to = 'site', values_to = 'NO3', cols = everything()) %>%
+  mutate(site = str_replace(site, 'site', 'site '))
+
+ggplot(df, aes(x = site, y = NO3)) +
+  geom_jitter(height = 0, width = .2) +
+  geom_hline(yintercept = 0, color = 'black') +
+  labs(y = latex2exp::TeX('$NO_3$  $(mmol / m^3)$')) +
+  theme_minimal() +
+  theme(axis.title.x = element_blank())
+```
+```{r}
+ggplot(df) +
+  geom_histogram(aes(x = NO3, fill = site), color = 'grey40', bins = 10) +
+  geom_hline(yintercept = 0, color = 'black') +
+  labs(y = latex2exp::TeX('$NO_3$  $(mmol / m^3)$')) +
+  theme_minimal() +
+  theme(axis.title.x = element_blank()) +
+  facet_wrap( ~ site, ncol = 1)
+```
+```{r}
+qqnorm(siteA)
+qqnorm(siteB)
+```
+
+```{r}
+t.test(siteA, siteB)
+
+lm(NO3 ~ site, data = df) %>% summary()
+```
+
