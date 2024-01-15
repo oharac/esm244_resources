@@ -1,0 +1,170 @@
+---
+title: "Quarto overview"
+author: "Casey O'Hara"
+date: "January 14, 2024"
+format: 
+  html:
+    toc: true
+    number-sections: true
+    code-fold: true
+execute:
+  echo: true
+  message: false
+  warning: false
+editor: visual
+---
+
+# Quarto document options (YAML header)
+
+-   Formats: HTML vs. PDF vs. Word (others too)
+    -   Format options
+-   Execute options
+    -   when/why?
+-   Cold folding
+    -   when/why?
+
+# Markdown formatting
+
+In the Markdown sections of the Quarto document, we have many options for styles (headers, lists, normal text, monospaced text) and formats (bold, italics). We can include images and links too! Note, here I'm presenting just a few of MANY options. See <https://quarto.org/docs/authoring/markdown-basics.html> for many more options!
+
+## Headers
+
+The previous two are level 1 and 2 headers. We can also do:
+
+### This is a Level 3 header
+
+through
+
+###### This is a level 6 header
+
+If you set up the Quarto document options to include a Table of Contents, headers are how you define what goes into the TOC.
+
+## Normal text and formatting
+
+We can denote text to be normal (no changes needed), or *italics* (single underline on each side, or single asterisk), or **bold** (double underline/asterisk) or even ***bold italics*** (three of each).
+
+Other options: superscript^super^ and subscript~sub~. ~~Strikethrough~~ and `code formatted` (this *looks* like code, monospaced, but does not run).
+
+### Option: code-formatted blocks
+
+You can format text in-line to look like (non-functional) code, using `backticks` - but you can also format whole sections of text to be formatted like code - perhaps for error messages, or sample code, or whatever. Just use three backticks on an otherwise blank line to start, and three more to end!
+
+```         
+Here is some text formatted like code.  It runs
+across multiple lines, and will keep all the
+line breaks and      spacing as-is.  (Regular
+Markdown text ignores multiple spaces and line breaks...)
+
+NOTE: This text LOOKS like code but is only for display purposes - it
+will not be run.
+```
+
+## Lists
+
+-   Bulleted list
+    -   Indent level 1 (4 spaces)
+        -   Indent level 2 (4 more)
+            -   etc...
+
+1.  Numbered list
+    a.  indent 4 spaces
+        i.  indent another 4 spaces, etc.
+
+## Links and Images
+
+Links: the bare URL, e.g., <https://www.google.com> (note, need the https:// in front otherwise looks relative to local path, and note this is different from older R Markdown); or [here's a link to Google](https://www.google.com) (this is the same as old R Markdown).
+
+Images: ![caption: here's a picture of Waffle at Douglas Preserve](img/waffle.jpg)
+
+***NOTE:*** Spacing between different format types is important - generally, if it doesn't render like you expect, make sure there's a blank line between your sections.
+
+# Code chunks
+
+Formatting in code chunks is different from that in Markdown areas of the Quarto document. Let's do a little bit of simple coding!
+
+```{r attach packages}
+#| message: false
+
+### You can add execute options in chunks to override document-wide options!
+### Check out options for eval and include, along with echo, message, warning
+
+### Remember pound signs in code chunks mean comments, while in Markdown they mean headers!
+library(tidyverse)
+library(palmerpenguins)
+
+peng_mean_mass <- mean(penguins$body_mass_g, na.rm = TRUE)
+```
+
+## Inline code chunks
+
+In a Markdown section, you can include small bits of *functional* code in-line: `` `r `` (your code here) `` ` ``.
+
+Three times seven is `r 3*7`.
+
+The mean body mass of penguins in the `palmerpenguins` dataset is `r round(peng_mean_mass / 1000, 1)` kilograms.
+
+## Tables
+
+Let's make a simple summary table and display it!
+
+```{r summarize penguins}
+peng_df <- penguins %>%
+  group_by(species) %>%
+  summarize(mean_mass = mean(body_mass_g, na.rm = TRUE))
+```
+
+### Basic table
+
+```{r basic table}
+peng_df
+```
+
+### `knitr::kable` table
+
+Let's do this in an inline code chunk (though works fine in a regular code chunk!)
+
+`r knitr::kable(peng_df)`
+
+Check out the `kableExtra` package for lots of cool formatting options for `kable` tables! Note, `kableExtra` only works in HTML mode.
+
+### `DT::datatable` table (HTML only!)
+
+```{r datatable}
+DT::datatable(peng_df)
+```
+
+Note differences in rounding. Here we'd probably round to three significant figures!
+
+## Plots
+
+Plots can either be embedded as is, or saved (`ggsave()`) and displayed as images. Let's create a ggplot!
+
+### Embedded as-is
+
+```{r create a plot}
+p <- ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
+  geom_point() +
+  theme_minimal() +
+  labs(x = 'Flipper length (mm)', y = 'Body mass (g)')
+
+p
+```
+
+### Saved and embedded as image
+
+This gives more control over sizing, e.g., if you're prepping a figure for a manuscript.
+
+```{r save the plot}
+ggsave(filename = 'img/peng_plot.png', plot = p, width = 4, height = 3, dpi = 300)
+
+```
+
+#### Embedded as image using `knitr::include_graphics()`
+
+```{r}
+knitr::include_graphics('img/peng_plot.png')
+```
+
+#### Embedded as image using markdown
+
+![penguin plot](img/peng_plot.png)
