@@ -7,6 +7,7 @@ format:
     toc: true
     number-sections: true
     code-fold: true
+    embed-resources: true
 execute:
   echo: true
   message: false
@@ -59,6 +60,15 @@ NOTE: This text LOOKS like code but is only for display purposes - it
 will not be run.
 ```
 
+Adding an `r` next to the first three backticks (NOT `{r}`, just `r`) will tell Quarto to format it as if it were code (but will NOT run it)
+
+```r
+### this is formatted like R code including syntax highlighting
+square_this <- function(x) {
+  return(x^2)
+}
+```
+
 ## Lists
 
 -   Bulleted list
@@ -74,7 +84,7 @@ will not be run.
 
 Links: the bare URL, e.g., <https://www.google.com> (note, need the https:// in front otherwise looks relative to local path, and note this is different from older R Markdown); or [here's a link to Google](https://www.google.com) (this is the same as old R Markdown).
 
-Images: ![caption: here's a picture of Waffle at Douglas Preserve](img/waffle.jpg)
+Images: ![caption: here\'s a picture of Waffle at Douglas Preserve](img/waffle.jpg)
 
 ***NOTE:*** Spacing between different format types is important - generally, if it doesn't render like you expect, make sure there's a blank line between your sections.
 
